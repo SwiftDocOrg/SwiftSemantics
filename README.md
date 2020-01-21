@@ -1,0 +1,304 @@
+# SwiftSemantics
+
+SwiftSemantics is a package that lets you
+parse Swift code into its constituent declarations.
+
+Use [SwiftSyntax][swiftsyntax] to construct 
+an abstract syntax tree from Swift source code,
+then walk the AST with the provided `DeclarationCollector`
+_(or with your own `SyntaxVisitor`-conforming type)_
+and construct a `Declaration` value for each visited `DeclSyntax` node:
+
+```swift
+import SwiftSyntax
+import SwiftSemantics
+
+let source = #"""
+import UIKit
+
+class ViewController: UIViewController, UITableViewDelegate {
+    enum Section: Int {
+        case summary, people, places
+    }
+
+    var people: [People], places: [Place]
+
+    @IBOutlet private(set) var tableView: UITableView!
+}
+"""#
+
+var collector = DeclarationCollector()
+let tree = try SyntaxParser.parse(source: source)
+tree.walk(&collector)
+
+// Import declarations
+collector.imports.first?.pathComponents // ["UIKit"]
+
+// Class declarations
+collector.classes.first?.name // "ViewController"
+collector.classes.first?.inheritance // ["UIViewController", "UITableViewDelegate"]
+
+// Enumeration declarations
+collector.enumerations.first?.name // "Section"
+collector.enumerations.first?.context // "ViewController"
+
+// Enumeration case declarations
+collector.enumerationCases.count // 3
+collector.enumerationCases.map { $0.name } // ["summary", "people", "places"])
+
+// Variable (property) declarations
+collector.variables.count // 3
+collector.variables[0].name // "people"
+collector.variables[1].typeAnnotation // "[Place]"
+collector.variables[2].name // "tableView"
+collector.variables[2].typeAnnotation // "UITableView!"
+collector.variables[2].attributes.first?.name // "IBOutlet"
+collector.variables[2].modifiers.first?.name // "private"
+collector.variables[2].modifiers.first?.detail // "set"
+```
+
+> **Note**:
+> For more information about SwiftSyntax,
+> see [this article from NSHipster][nshipster swiftsyntax].
+
+This package is used by [swift-doc][swift-doc] 
+in coordination with [SwiftMarkup][swiftmarkup] 
+to generate documentation for Swift projects
+_([including this one][swiftsemantics documentation])_.
+
+## Requirements
+
+- Swift 5.1+
+
+## Installation
+
+### Swift Package Manager
+
+Add the SwiftMarkup package to your target dependencies in `Package.swift`:
+
+```swift
+import PackageDescription
+
+let package = Package(
+  name: "YourProject",
+  dependencies: [
+    .package(
+        url: "https://github.com/SwiftDocOrg/SwiftSemantics",
+        from: "0.0.1"
+    ),
+  ]
+)
+```
+
+Then run the `swift build` command to build your project.
+
+## Detailed Design
+
+Swift defines 17 different kinds of declarations,
+each of which is represented by a corresponding type in SwiftSemantics
+that conforms to the 
+[`Declaration` protocol](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Declaration):
+
+- [`AssociatedType`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/AssociatedType)
+- [`Class`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Class)
+- [`ConditionalCompilationBlock`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/ConditionalCompilationBlock)
+- [`Deinitializer`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Deinitializer)
+- [`Enumeration`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Enumeration)
+- [`Enumeration.Case`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Enumeration_Case)
+- [`Extension`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Extension)
+- [`Function`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Function)
+- [`Import`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Import)
+- [`Initializer`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Initializer)
+- [`Operator`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Operator)
+- [`PrecedenceGroup`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/PrecedenceGroup)
+- [`Protocol`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Protocol)
+- [`Structure`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Structure)
+- [`Subscript`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Subscript)
+- [`Typealias`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Typealias)
+- [`Variable`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Variable)
+
+> **Note**:
+> Examples of each declaration are provided in the documentation
+> as well as [unit tests](https://github.com/SwiftDocOrg/SwiftSemantics/tree/master/Tests/SwiftSemanticsTests).
+
+The `Declaration` protocol itself has no requirements.
+However, 
+adopting types share many of the same properties, 
+such as 
+[`attributes`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Class#attributes),
+[`modifiers`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Class#modifiers), 
+and
+[`keyword`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Class#keyword).
+
+SwiftSemantics declaration types are designed to
+maximize the information provided by SwiftSyntax,
+closely following the structure and naming conventions of syntax nodes.
+In some cases,
+the library takes additional measures to refine results 
+into more conventional interfaces.
+For example,
+the `PrecedenceGroup` type defines nested
+[`Associativity`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/PrecedenceGroup_Associativity)
+and
+[`Relation`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/PrecedenceGroup_Relation)
+enumerations for greater convenience and type safety.
+However, in other cases,
+results may be provided in their original, raw `String` values;
+this decision is typically motivated either by 
+concern for possible future changes to the language
+or simply out of practicality.
+
+For the most part,
+these design decisions allow developers with even a basic understanding of Swift
+to work productively with parsed declarations.
+There are, however, some details that warrant further discussion:
+
+### Type Members Aren't Provided as Properties
+
+In Swift,
+a class, enumeration, or structure may contain
+one or more properties or methods,
+known as _type members_.
+A type can itself be a member of another type,
+such as with `CodingKeys` enumerations nested within `Codable`-conforming types.
+
+SwiftSemantics doesn't provide built-in support for accessing type members
+directly from declaration values.
+This is probably the most surprising 
+(and perhaps contentious) 
+design decision made in the library so far,
+but we believe it to be the most reasonable option available.
+
+One motivation comes down to delegation of responsibility:
+It's the responsibility of `DeclarationCollector`
+and other types conforming to `SyntaxVisitor`
+to walk the abstract syntax tree,
+respond to nodes as they're visited,
+and decide whether to visit or skip a node's children. 
+And if a `Declaration` were to initialize its own members,
+it would have the effect of overriding the tree walker's decision
+to visit or skip any children.
+We believe that an approach involving direct member initialization is inflexible
+and more likely to produce unexpected results.
+For instance,
+if you wanted to walk the AST to collect only Swift class declarations,
+there wouldn't be a clear way to avoid needlessly initializing
+the members of each top-level class
+without potentially missing class declarations nested in other types.
+
+But really, 
+the controlling motivation has to do with extensions --- 
+especially when used across multiple files in a module.
+Consider the following two Swift files in the same module:
+
+```swift
+// First.swift
+enum A { enum B { } }
+
+// Second.swift
+extension A.B { static func f(){} }
+```
+
+The first file declares two enumerations:
+`A` and `B`, which is nested in `A`,
+as well as protocol `P`.
+The second file declares an extension on the type `A.B`
+that provides a static function `f()`.
+Depending on the order in which these files are processed,
+the extension on `A.B` may precede any knowledge of `A` or `B`.
+The capacity to reconcile these declarations exceeds
+that of any individual declaration (or even a syntax walker),
+and any intermediate results would necessarily be incomplete
+and therefore misleading.
+
+<details>
+<summary><em>And if that weren't enough to dissuade you, consider what happens when we throw generically-constrained extensions and conditional compilation into the mix...</em></summary>
+
+```swift
+// Third.swift
+#if platform(linux)
+enum C {}
+#else
+protocol P {}
+extension A.B where T: P { static func g(){} }
+#end
+```
+
+</details>
+
+Instead,
+our approach for resolving the aforementioned complexity is 
+to provide just enough context to let consumers sort things out for themselves
+at the end.
+This is where the
+[`context`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Class#context) property
+comes into play.
+Given a flat list of declarations across different source files,
+you can deduce how they relate to one another based on their qualified name.
+
+Continuing our example from before,
+here's a flattened view of the named declarations:
+
+```swift
+enum A                   {}
+enum A.B                 {}
+static func A.B.f()      {}
+```
+
+Using simple string pattern matching,
+you can easily determine that `f()` 
+is a member of `B`,
+which itself is a member of `A`.
+
+This is the approach we settled on for [swift-doc][swift-doc],
+and it's worked reasonably well so far.
+That said, 
+we're certainly open to hearing any alternative approaches
+and invite you to share any feedback about project architecture
+by [opening a new Issue](https://github.com/SwiftDocOrg/SwiftSemantics/issues/new).
+
+### Declarations Don't Include Header Documentation or Source Location
+
+Documentation comments,
+like regular comments and whitespace,
+are considered to be "trivia" for syntax nodes.
+To keep this library narrowly focused,
+we don't provide a built-in functionality for symbol documentation
+(source location is omitted from declarations for similar reasons).
+
+If you wanted to do this yourself,
+you could subclass `DeclarationCollector`
+and override the `visit` delegate methods
+to retrieve, parse, and associate documentation comments
+with their corresponding declaration.
+Alternatively,
+you could use [SwiftDoc][swift-doc],
+which ---
+in conjunction with [SwiftMarkup][swiftmarkup] --- 
+_does_ offer this functionality.
+
+## Known Issues
+
+- Xcode 11 cannot run unit tests (<kbd>⌘</kbd><kbd>U</kbd>) 
+  when opening the SwiftSemantics package directly,
+  as opposed first to generating an Xcode project file with 
+  `swift package generate-xcodeproj`.
+  (The reported error is:
+  `Library not loaded: @rpath/lib_InternalSwiftSyntaxParser.dylib`).
+  As a workaround,
+  you can run unit tests from the command line
+  with `swift test`.
+
+## License
+
+MIT
+
+## Contact
+
+Mattt ([@mattt](https://twitter.com/mattt))
+
+[swiftsyntax]: https://github.com/apple/swift-syntax
+[nshipster swiftsyntax]: https://nshipster.com/swiftsyntax/
+[swift-doc]: https://github.com/SwiftDocOrg/swift-doc
+[swiftmarkup]: https://github.com/SwiftDocOrg/SwiftMarkup
+[swiftsemantics documentation]: https://github.com/SwiftDocOrg/SwiftSemantics/wiki
