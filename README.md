@@ -6,7 +6,7 @@ parse Swift code into its constituent declarations.
 Use [SwiftSyntax][swiftsyntax] to construct 
 an abstract syntax tree from Swift source code,
 then walk the AST with the provided `DeclarationCollector`
-_(or with your own `SyntaxVisitor`-conforming type)_
+(or with your own `SyntaxVisitor`-conforming type)
 and construct a `Declaration` value for each visited `DeclSyntax` node:
 
 ```swift
@@ -157,27 +157,27 @@ There are, however, some details that warrant further discussion:
 
 In Swift,
 a class, enumeration, or structure may contain
-one or more properties or methods,
-known as _type members_.
+one or more initializers, properties, subscripts, and methods, 
+known as _members_.
 A type can itself be a member of another type,
 such as with `CodingKeys` enumerations nested within `Codable`-conforming types.
+Likewise, a type may also have one or more associated type or type alias members.
 
-SwiftSemantics doesn't provide built-in support for accessing type members
-directly from declaration values.
+SwiftSemantics doesn't provide built-in support for 
+accessing type members directly from declaration values.
 This is probably the most surprising 
 (and perhaps contentious) 
 design decision made in the library so far,
 but we believe it to be the most reasonable option available.
 
 One motivation comes down to delegation of responsibility:
-It's the responsibility of `DeclarationCollector`
-and other types conforming to `SyntaxVisitor`
-to walk the abstract syntax tree,
+`DeclarationCollector` and other types conforming to `SyntaxVisitor`
+walk the abstract syntax tree,
 respond to nodes as they're visited,
 and decide whether to visit or skip a node's children. 
-And if a `Declaration` were to initialize its own members,
-it would have the effect of overriding the tree walker's decision
-to visit or skip any children.
+If a `Declaration` were to initialize its own members,
+it would have the effect of overriding 
+the tree walker's decision to visit or skip any children.
 We believe that an approach involving direct member initialization is inflexible
 and more likely to produce unexpected results.
 For instance,
@@ -212,7 +212,10 @@ and any intermediate results would necessarily be incomplete
 and therefore misleading.
 
 <details>
-<summary><em>And if that weren't enough to dissuade you, consider what happens when we throw generically-constrained extensions and conditional compilation into the mix...</em></summary>
+<summary><em>And if that weren't enough to dissuade you...</em></summary>
+
+Consider what happens when we throw generically-constrained extensions 
+and conditional compilation into the mix...
 
 ```swift
 // Third.swift
@@ -257,11 +260,51 @@ we're certainly open to hearing any alternative approaches
 and invite you to share any feedback about project architecture
 by [opening a new Issue](https://github.com/SwiftDocOrg/SwiftSemantics/issues/new).
 
+### Not All Language Features Are Encoded
+
+Swift is a complex language with many different rules and concepts,
+and not all of them are represented directly in SwiftSemantics.
+
+Declaration membership, 
+discussed in the previous section,
+is one such example.
+Another is how
+declaration access modifiers like `public` and `private(set)`
+aren't given any special treatment;
+they're [`Modifier`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Modifier) values 
+like any other.
+
+This design strategy keeps the library narrowly focused
+and more adaptable to language evolution over time.
+
+You can extend SwiftSemantics in your own code
+to encode any missing language concepts that are relevant to your problem.
+For example,
+SwiftSemantics doesn't encode the concept of 
+[property wrappers](https://nshipster.com/propertywrapper/),
+but you could use it as the foundation of your own representation:
+
+```swift
+protocol PropertyWrapperType {
+    var attributes: [Attribute] { get }
+}
+
+extension Class: PropertyWrapperType {}
+extension Enumeration: PropertyWrapperType {}
+extension Structure: PropertyWrapperType {}
+
+extension PropertyWrapperType {
+    var isPropertyWrapper: Bool {
+        return attributes.contains { $0.name == "propertyWrapper" }
+    }
+}
+```
+
 ### Declarations Don't Include Header Documentation or Source Location
 
 Documentation comments,
 like regular comments and whitespace,
-are considered to be "trivia" for syntax nodes.
+are deemed by SwiftSyntax to be "trivia" for syntax nodes.
 To keep this library narrowly focused,
 we don't provide a built-in functionality for symbol documentation
 (source location is omitted from declarations for similar reasons).
@@ -272,9 +315,8 @@ and override the `visit` delegate methods
 to retrieve, parse, and associate documentation comments
 with their corresponding declaration.
 Alternatively,
-you could use [SwiftDoc][swift-doc],
-which ---
-in conjunction with [SwiftMarkup][swiftmarkup] --- 
+you can use [SwiftDoc][swift-doc],
+which — in conjunction with [SwiftMarkup][swiftmarkup] —
 _does_ offer this functionality.
 
 ## Known Issues
