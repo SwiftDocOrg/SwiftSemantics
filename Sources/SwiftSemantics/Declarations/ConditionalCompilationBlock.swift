@@ -36,6 +36,7 @@ public struct ConditionalCompilationBlock: Declaration, Hashable, Codable {
      #else
      enum B {}
      #endif
+     ```
 
      The first branch has the keyword `#if` and condition `"true"`.
      The second branch has the keyword `#else` and no condition.
