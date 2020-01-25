@@ -14,6 +14,7 @@ import XCTest
             testCase(OperatorTests.allTests),
             testCase(ProtocolTests.allTests),
             testCase(StructureTests.allTests),
+            testCase(SubscriptTests.allTests),
             testCase(VariableTests.allTests),
         ]
     }

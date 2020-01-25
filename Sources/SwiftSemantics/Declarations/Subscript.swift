@@ -2,6 +2,20 @@ import SwiftSyntax
 
 /// A subscript declaration.
 public struct Subscript: Declaration, Hashable, Codable {
+    /**
+     A dot-delimited (`.`) path used to qualify the function name
+     within the module scope of the declaration,
+     or `nil` if the function isn't nested
+     (that is, declared at the top-level scope of a module).
+
+     For example,
+     given the following declaration of a subscript,
+     the `context` is `"A.B"`:
+
+     ```swift
+     enum A { struct B { subscript(index: Int) -> Int? { ... } } }
+     ```
+     */
     public let context: String?
 
     /// The declaration attributes.
@@ -13,8 +27,8 @@ public struct Subscript: Declaration, Hashable, Codable {
     /// The declaration keyword (`"subscript"`).
     public let keyword: String
 
-    /// The subscript name.
-    public let name: String
+    /// The subscript indices.
+    public let indices: [Function.Parameter]
     
     /**
      The generic parameters for the declaration.
@@ -45,6 +59,9 @@ public struct Subscript: Declaration, Hashable, Codable {
      */
     public let genericRequirements: [GenericRequirement]
 
+    /// The return type of the subscript.
+    public let returnType: String
+
     /// The subscript getter and/or setter.
     public let accessors: [Variable.Accessor]
 }
@@ -58,9 +75,38 @@ extension Subscript: ExpressibleBySyntax {
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.subscriptKeyword.withoutTrivia().text
-        name = node.name ?? ""
+        indices = node.indices.parameterList.map { Function.Parameter($0) }
         genericParameters = node.genericParameterClause?.genericParameterList.map { GenericParameter($0) } ?? []
+        returnType = node.result.returnType.description.trimmed
         genericRequirements = GenericRequirement.genericRequirements(from: node.genericWhereClause?.requirementList)
         accessors = Variable.Accessor.accessors(from: node.accessor as? AccessorBlockSyntax)
     }
 }
+
+// MARK: - CustomStringConvertible
+
+extension Subscript: CustomStringConvertible {
+    public var description: String {
+        var description = (
+            attributes.map { $0.description } +
+                modifiers.map { $0.description } +
+                [keyword]
+            ).joined(separator: " ")
+
+        if !genericParameters.isEmpty {
+            description += "<\(genericParameters.map { $0.description }.joined(separator: ", "))>"
+        }
+
+        description += "(\(indices.map { $0.description }.joined(separator: ", ")))"
+
+        if !genericRequirements.isEmpty {
+            description += " where \(genericRequirements.map { $0.description }.joined(separator: ", "))"
+        }
+
+        description += " -> \(returnType)"
+
+        return description
+    }
+
+}
+
