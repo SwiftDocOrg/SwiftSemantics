@@ -58,9 +58,16 @@ public struct PrecedenceGroup: Declaration, Hashable, Codable {
         case lowerThan([String])
     }
 
+    /// The declaration attributes.
     public let attributes: [Attribute]
+
+    /// The declaration modifiers.
     public let modifiers: [Modifier]
+
+    /// The declaration keyword (`"precedencegroup"`)
     public let keyword: String
+
+    /// The precedence group name.
     public let name: String
 
     /**
