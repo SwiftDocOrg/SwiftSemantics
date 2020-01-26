@@ -192,7 +192,7 @@ extension Function.Signature: ExpressibleBySyntax {
     public init(_ node: FunctionSignatureSyntax) {
         input = node.input.parameterList.map { Function.Parameter($0) }
         output = node.output?.returnType.description.trimmed
-        throwsOrRethrowsKeyword = node.throwsOrRethrowsKeyword?.description
+        throwsOrRethrowsKeyword = node.throwsOrRethrowsKeyword?.description.trimmed
     }
 }
 
