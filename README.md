@@ -1,5 +1,7 @@
 # SwiftSemantics
 
+![CI][ci badge]
+
 SwiftSemantics is a package that lets you
 parse Swift code into its constituent declarations.
 
@@ -344,3 +346,5 @@ Mattt ([@mattt](https://twitter.com/mattt))
 [swift-doc]: https://github.com/SwiftDocOrg/swift-doc
 [swiftmarkup]: https://github.com/SwiftDocOrg/SwiftMarkup
 [swiftsemantics documentation]: https://github.com/SwiftDocOrg/SwiftSemantics/wiki
+
+[ci badge]: https://github.com/SwiftDocOrg/SwiftSemantics/workflows/CI/badge.svg

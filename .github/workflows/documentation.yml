@@ -1,14 +1,19 @@
-name: CI
+name: Documentation
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - Sources
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
-      - run: mkdir "${{ github.workspace }}/Documentation"
+      - name: Checkout
+        uses: actions/checkout@v1
       - name: Generate Documentation
         uses: SwiftDocOrg/swift-doc@master
         with:
