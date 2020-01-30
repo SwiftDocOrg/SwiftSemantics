@@ -64,3 +64,29 @@ extension Typealias: ExpressibleBySyntax {
         genericRequirements = GenericRequirement.genericRequirements(from: node.genericWhereClause?.requirementList)
     }
 }
+
+// MARK: - CustomStringConvertible
+
+extension Typealias: CustomStringConvertible {
+    public var description: String {
+        var description = (
+        attributes.map { $0.description } +
+            modifiers.map { $0.description } +
+            [keyword, name]
+        ).joined(separator: " ")
+
+        if !genericParameters.isEmpty {
+            description += "<\(genericParameters.map { $0.description }.joined(separator: ", "))>"
+        }
+
+        if let initializedType = initializedType {
+            description += " = \(initializedType)"
+        }
+
+        if !genericRequirements.isEmpty {
+            description += " where \(genericRequirements.map { $0.description }.joined(separator: ", "))"
+        }
+
+        return description
+    }
+}

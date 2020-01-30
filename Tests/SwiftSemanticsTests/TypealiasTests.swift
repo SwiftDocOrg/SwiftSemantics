@@ -19,6 +19,7 @@ final class TypealiasTests: XCTestCase {
         XCTAssertEqual(`typealias`.genericParameters[0].name, "T")
         XCTAssertEqual(`typealias`.genericParameters[0].type, "Comparable")
         XCTAssertEqual(`typealias`.initializedType, "Array<T>")
+        XCTAssertEqual(`typealias`.description, source)
     }
 
     func testTypealiasDeclarationsWithGenericRequirement() throws {
