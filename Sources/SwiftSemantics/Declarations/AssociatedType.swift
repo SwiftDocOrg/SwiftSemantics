@@ -41,3 +41,15 @@ extension AssociatedType: ExpressibleBySyntax {
         name = node.identifier.withoutTrivia().text
     }
 }
+
+// MARK: - CustomStringConvertible
+
+extension AssociatedType: CustomStringConvertible {
+    public var description: String {
+        return (
+            attributes.map { $0.description } +
+            modifiers.map { $0.description } +
+            [keyword, name]
+        ).joined(separator: " ")
+    }
+}
