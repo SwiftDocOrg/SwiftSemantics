@@ -88,6 +88,10 @@ let package = Package(
         url: "https://github.com/SwiftDocOrg/SwiftSemantics",
         from: "0.0.1"
     ),
+    .package(
+        url: "https://github.com/apple/swift-syntax.git", 
+        from: "0.50100.0"
+    ),
   ]
 )
 ```
