@@ -12,14 +12,12 @@ final class TypealiasTests: XCTestCase {
         XCTAssertEqual(declarations.count, 1)
         let `typealias` = declarations.first!
 
-        XCTAssertNil(`typealias`.context)
         XCTAssertEqual(`typealias`.attributes.count, 0)
         XCTAssertEqual(`typealias`.name, "SortableArray")
         XCTAssertEqual(`typealias`.genericParameters.count, 1)
         XCTAssertEqual(`typealias`.genericParameters[0].name, "T")
         XCTAssertEqual(`typealias`.genericParameters[0].type, "Comparable")
         XCTAssertEqual(`typealias`.initializedType, "Array<T>")
-        XCTAssertEqual(`typealias`.description, source)
     }
 
     func testTypealiasDeclarationsWithGenericRequirement() throws {
@@ -31,7 +29,6 @@ final class TypealiasTests: XCTestCase {
         XCTAssertEqual(declarations.count, 1)
         let `typealias` = declarations.first!
 
-        XCTAssertNil(`typealias`.context)
         XCTAssertEqual(`typealias`.attributes.count, 0)
         XCTAssertEqual(`typealias`.name, "ArrayOfNumbers")
         XCTAssertEqual(`typealias`.genericParameters.count, 1)

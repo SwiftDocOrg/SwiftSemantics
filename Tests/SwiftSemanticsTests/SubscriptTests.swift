@@ -13,7 +13,6 @@ final class SubscriptTests: XCTestCase {
         let declaration = declarations.first!
 
         XCTAssert(declaration.attributes.isEmpty)
-        XCTAssertNil(declaration.context)
         XCTAssertEqual(declaration.indices.count, 1)
         XCTAssertEqual(declaration.indices[0].firstName, "index")
         XCTAssertEqual(declaration.indices[0].type, "Int")

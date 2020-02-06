@@ -18,7 +18,6 @@ final class ConditionalCompilationBlockTests: XCTestCase {
         XCTAssertEqual(declarations.count, 1)
         let conditionalCompilationBlock = declarations.first!
 
-        XCTAssertNil(conditionalCompilationBlock.context)
         XCTAssertEqual(conditionalCompilationBlock.branches.count, 3)
 
         XCTAssertEqual(conditionalCompilationBlock.branches[0].keyword, "#if")

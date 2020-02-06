@@ -14,7 +14,6 @@ final class AssociatedTypeTests: XCTestCase {
         XCTAssertEqual(declarations.count, 1)
         let associatedType = declarations.first!
 
-        XCTAssertEqual(associatedType.context, "P")
         XCTAssertEqual(associatedType.attributes.count, 0)
         XCTAssertEqual(associatedType.name, "T")
         XCTAssertEqual(associatedType.description, "associatedtype T")

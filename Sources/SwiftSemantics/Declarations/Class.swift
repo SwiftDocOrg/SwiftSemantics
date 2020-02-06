@@ -2,22 +2,6 @@ import SwiftSyntax
 
 /// A class declaration.
 public struct Class: Declaration, Hashable, Codable {
-    /**
-    A dot-delimited (`.`) path used to qualify the class name
-    within the module scope of the declaration,
-    or `nil` if the class isn't nested
-    (that is, declared at the top-level scope of a module).
-
-    For example,
-    given the following declaration of a class `C`,
-    the `context` is `"A.B"`:
-
-    ```swift
-    class A { class B { class C {} }
-    ```
-    */
-    public let context: String?
-
     /// The declaration attributes.
     public let attributes: [Attribute]
 
@@ -85,7 +69,6 @@ public struct Class: Declaration, Hashable, Codable {
 extension Class: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: ClassDeclSyntax) {
-        context = node.ancestors.compactMap { $0.name }.reversed().joined(separator: ".").nonEmpty
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.classKeyword.withoutTrivia().text

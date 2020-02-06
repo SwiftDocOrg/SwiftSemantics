@@ -2,22 +2,6 @@ import SwiftSyntax
 
 /// An enumeration declaration.
 public struct Enumeration: Declaration, Hashable, Codable {
-    /**
-     A dot-delimited (`.`) path used to qualify the enumeration name
-     within the module scope of the declaration,
-     or `nil` if the enumeration isn't nested
-     (that is, declared at the top-level scope of a module).
-
-     For example,
-     given the following declaration of an enumeration `C`,
-     the `context` is `"A.B"`:
-
-     ```swift
-     enum A { enum B { enum C {} }
-     ```
-     */
-    public let context: String?
-
     /// The enumeration declaration attributes.
     public let attributes: [Attribute]
 
@@ -79,22 +63,6 @@ public struct Enumeration: Declaration, Hashable, Codable {
 
     /// An enumeration case.
     public struct Case: Declaration, Hashable, Codable {
-        /**
-        A dot-delimited (`.`) path used to qualify the enumeration case name
-        within the module scope of the declaration,
-        or `nil` if the containing enumeration isn't nested
-        (that is, declared at the top-level scope of a module).
-
-        For example,
-        given the following declaration of case `C.c`
-        the `context` is `"A.B"`:
-
-        ```swift
-        enum A { enum B { enum C { case c } }
-        ```
-        */
-        public let context: String?
-
         /// The declaration attributes.
         public let attributes: [Attribute]
 
@@ -152,7 +120,6 @@ extension Enumeration.Case: CustomStringConvertible {
 extension Enumeration: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: EnumDeclSyntax) {
-        context = node.ancestors.compactMap { $0.name }.reversed().joined(separator: ".").nonEmpty
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.enumKeyword.withoutTrivia().text
@@ -181,7 +148,6 @@ extension Enumeration.Case {
             return nil
         }
 
-        context = parent.ancestors.compactMap { $0.name }.reversed().joined(separator: ".").nonEmpty
         attributes = parent.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = parent.modifiers?.map { Modifier($0) } ?? []
         keyword = parent.caseKeyword.withoutTrivia().text

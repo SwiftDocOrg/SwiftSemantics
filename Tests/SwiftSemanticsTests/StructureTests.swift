@@ -12,13 +12,8 @@ final class StructureTests: XCTestCase {
         XCTAssertEqual(declarations.count, 3)
 
         XCTAssertEqual(declarations[0].name, "A")
-        XCTAssertNil(declarations[0].context)
-
         XCTAssertEqual(declarations[1].name, "B")
-        XCTAssertEqual(declarations[1].context, "A")
-
         XCTAssertEqual(declarations[2].name, "C")
-        XCTAssertEqual(declarations[2].context, "A.B")
     }
 
     static var allTests = [

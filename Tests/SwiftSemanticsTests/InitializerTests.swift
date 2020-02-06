@@ -15,7 +15,6 @@ final class InitializerTests: XCTestCase {
         let initializer = declarations.first!
 
         XCTAssert(initializer.attributes.isEmpty)
-        XCTAssertEqual(initializer.context, "Person")
         XCTAssertEqual(initializer.keyword, "init")
         XCTAssertEqual(initializer.parameters.count, 1)
         XCTAssertEqual(initializer.parameters[0].firstName, "names")

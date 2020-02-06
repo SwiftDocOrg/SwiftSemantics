@@ -32,7 +32,6 @@ final class DeclarationCollectorTests: XCTestCase {
 
         XCTAssertEqual(collector.enumerations.count, 1)
         XCTAssertEqual(collector.enumerations.first?.name, "Section")
-        XCTAssertEqual(collector.enumerations.first?.context, "ViewController")
         XCTAssertEqual(collector.enumerations.first?.inheritance, ["Int"])
 
         XCTAssertEqual(collector.enumerationCases.count, 3)

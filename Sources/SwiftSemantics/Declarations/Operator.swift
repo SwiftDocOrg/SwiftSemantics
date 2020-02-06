@@ -21,8 +21,6 @@ public struct Operator: Declaration, Hashable, Codable {
         }
     }
 
-    public let context: String?
-
     /// The declaration attributes.
     public let attributes: [Attribute]
 
@@ -134,7 +132,6 @@ public struct Operator: Declaration, Hashable, Codable {
 extension Operator: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: OperatorDeclSyntax) {
-        context = node.ancestors.compactMap { $0.name }.reversed().joined(separator: ".").nonEmpty
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.operatorKeyword.withoutTrivia().text

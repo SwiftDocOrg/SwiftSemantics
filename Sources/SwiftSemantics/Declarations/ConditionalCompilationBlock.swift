@@ -3,28 +3,6 @@ import SwiftSyntax
 /// A conditional compilation block declaration.
 public struct ConditionalCompilationBlock: Declaration, Hashable, Codable {
     /**
-     A dot-delimited (`.`) path describing the enclosing scope
-     of the conditional compilation block declaration,
-     or `nil` if the conditional compilation block isn't nested
-     (that is, declared at the top-level scope of a module).
-
-     For example,
-     the following conditional compilation block declaration
-     has the context `"A.B"`:
-
-     ```swift
-     enum A {
-        enum B {
-            #if true
-                enum C {}
-            #endif
-        }
-     }
-     ```
-    */
-    public let context: String?
-
-    /**
      The conditional compilation block branches.
 
      For example,
@@ -102,7 +80,6 @@ public struct ConditionalCompilationBlock: Declaration, Hashable, Codable {
 extension ConditionalCompilationBlock: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: IfConfigDeclSyntax) {
-        context = node.ancestors.compactMap { $0.name }.reversed().joined(separator: ".").nonEmpty
         branches = node.withoutTrivia().clauses.map { Branch($0) }
     }
 }

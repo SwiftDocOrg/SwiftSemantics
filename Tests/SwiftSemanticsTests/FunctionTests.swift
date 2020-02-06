@@ -13,7 +13,6 @@ final class FunctionTests: XCTestCase {
         let declaration = declarations.first!
 
         XCTAssert(declaration.attributes.isEmpty)
-        XCTAssertNil(declaration.context)
         XCTAssertEqual(declaration.identifier, "dump")
         XCTAssertEqual(declaration.description, source)
     }

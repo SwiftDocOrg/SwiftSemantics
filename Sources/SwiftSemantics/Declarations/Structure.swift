@@ -2,8 +2,6 @@ import SwiftSyntax
 
 /// A structure declaration.
 public struct Structure: Declaration, Hashable, Codable {
-    public let context: String?
-
     /// The declaration attributes.
     public let attributes: [Attribute]
 
@@ -66,7 +64,6 @@ public struct Structure: Declaration, Hashable, Codable {
 extension Structure: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: StructDeclSyntax) {
-        context = node.ancestors.compactMap { $0.name }.reversed().joined(separator: ".").nonEmpty
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.structKeyword.withoutTrivia().text

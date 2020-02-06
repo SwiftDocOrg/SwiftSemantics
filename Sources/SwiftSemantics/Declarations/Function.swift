@@ -2,22 +2,6 @@ import SwiftSyntax
 
 /// A function declaration.
 public struct Function: Declaration, Hashable, Codable {
-    /**
-     A dot-delimited (`.`) path used to qualify the function name
-     within the module scope of the declaration,
-     or `nil` if the function isn't nested
-     (that is, declared at the top-level scope of a module).
-
-     For example,
-     given the following declaration of a function `greet`,
-     the `context` is `"A.B"`:
-
-     ```swift
-     enum A { enum B { static func greet() {} }
-     ```
-    */
-    public let context: String?
-
     /// The declaration attributes.
     public let attributes: [Attribute]
 
@@ -164,7 +148,6 @@ public struct Function: Declaration, Hashable, Codable {
 extension Function: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: FunctionDeclSyntax) {
-        context = node.ancestors.compactMap { $0.name }.reversed().joined(separator: ".").nonEmpty
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.funcKeyword.withoutTrivia().text

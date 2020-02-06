@@ -13,7 +13,6 @@ final class OperatorTests: XCTestCase {
         let declaration = declarations.first!
 
         XCTAssert(declaration.attributes.isEmpty)
-        XCTAssertNil(declaration.context)
         XCTAssertEqual(declaration.modifiers.count, 1)
         XCTAssertEqual(declaration.modifiers.first?.name, "prefix")
         XCTAssertEqual(declaration.kind, .prefix)

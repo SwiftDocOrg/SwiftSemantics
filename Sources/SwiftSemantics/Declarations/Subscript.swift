@@ -2,22 +2,6 @@ import SwiftSyntax
 
 /// A subscript declaration.
 public struct Subscript: Declaration, Hashable, Codable {
-    /**
-     A dot-delimited (`.`) path used to qualify the function name
-     within the module scope of the declaration,
-     or `nil` if the function isn't nested
-     (that is, declared at the top-level scope of a module).
-
-     For example,
-     given the following declaration of a subscript,
-     the `context` is `"A.B"`:
-
-     ```swift
-     enum A { struct B { subscript(index: Int) -> Int? { ... } } }
-     ```
-     */
-    public let context: String?
-
     /// The declaration attributes.
     public let attributes: [Attribute]
 
@@ -71,7 +55,6 @@ public struct Subscript: Declaration, Hashable, Codable {
 extension Subscript: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: SubscriptDeclSyntax) {
-        context = node.ancestors.compactMap { $0.name }.reversed().joined(separator: ".").nonEmpty
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.subscriptKeyword.withoutTrivia().text

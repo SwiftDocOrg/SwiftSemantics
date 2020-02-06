@@ -43,7 +43,6 @@ collector.classes.first?.inheritance // ["UIViewController", "UITableViewDelegat
 
 // Enumeration declarations
 collector.enumerations.first?.name // "Section"
-collector.enumerations.first?.context // "ViewController"
 
 // Enumeration case declarations
 collector.enumerationCases.count // 3
@@ -237,28 +236,8 @@ extension A.B where T: P { static func g(){} }
 </details>
 
 Instead,
-our approach for resolving the aforementioned complexity is 
-to provide just enough context to let consumers sort things out for themselves
-at the end.
-This is where the
-[`context`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Class#context) property
-comes into play.
-Given a flat list of declarations across different source files,
-you can deduce how they relate to one another based on their qualified name.
-
-Continuing our example from before,
-here's a flattened view of the named declarations:
-
-```swift
-enum A                   {}
-enum A.B                 {}
-static func A.B.f()      {}
-```
-
-Using simple string pattern matching,
-you can easily determine that `f()` 
-is a member of `B`,
-which itself is a member of `A`.
+our approach delegates the responsibility for
+reconciling declaration contexts to API consumers.
 
 This is the approach we settled on for [swift-doc][swift-doc],
 and it's worked reasonably well so far.
