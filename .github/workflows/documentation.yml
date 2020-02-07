@@ -5,7 +5,8 @@ on:
     branches:
       - master
     paths:
-      - Sources
+      - .github/workflows/documentation.yml
+      - Sources/**.swift
 
 jobs:
   build:
