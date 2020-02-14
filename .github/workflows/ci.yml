@@ -3,14 +3,14 @@ name: CI
 on: [push]
 
 jobs:
-  macos:
-    runs-on: macOS-latest
+  # macos:
+  #   runs-on: macOS-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Build and Test
-        run: swift test
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v1
+  #     - name: Build and Test
+  #       run: swift test
 
   linux:
     runs-on: ubuntu-latest
