@@ -15,12 +15,8 @@ jobs:
   linux:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        swift: ["5.1"]
-
     container:
-      image: swift:${{ matrix.swift }}
+      image: swiftlang/swift:nightly-5.2-xenial
 
     steps:
       - name: Checkout
