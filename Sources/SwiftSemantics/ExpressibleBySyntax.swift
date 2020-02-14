@@ -5,5 +5,5 @@ public protocol ExpressibleBySyntax {
     associatedtype Syntax: SwiftSyntax.Syntax
 
     /// Creates an instance initialized with the given syntax node.
-    init(_ node: Syntax)
+    init?(_ node: Syntax)
 }

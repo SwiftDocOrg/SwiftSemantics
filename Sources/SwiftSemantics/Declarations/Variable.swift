@@ -48,17 +48,17 @@ public struct Variable: Declaration, Hashable, Codable {
 // MARK: - ExpressibleBySyntax
 
 extension Variable: ExpressibleBySyntax {
+    /**
+     Creates and returns variables from a variable declaration,
+     which may contain one or more pattern bindings,
+     such as `let x: Int = 1, y: Int = 2`.
+     */
     public static func variables(from node: VariableDeclSyntax) -> [Variable] {
-        return node.bindings.compactMap { Variable(binding: $0) }
+        return node.bindings.compactMap { Variable($0) }
     }
 
     /// Creates an instance initialized with the given syntax node.
-    @available(swift, introduced: 0.0.1, deprecated: 0.0.1, message: "Use Variable.variables(from:) instead")
-    public init(_ node: VariableDeclSyntax) {
-        self.init(binding: Array(node.bindings).first!)!
-    }
-
-    private init?(binding node: PatternBindingSyntax) {
+    public init?(_ node: PatternBindingSyntax) {
         guard let parent = node.context as? VariableDeclSyntax else {
             preconditionFailure("PatternBindingSyntax should be contained within VariableDeclSyntax")
             return nil

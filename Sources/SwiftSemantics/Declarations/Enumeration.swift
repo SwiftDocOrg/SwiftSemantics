@@ -133,16 +133,11 @@ extension Enumeration: ExpressibleBySyntax {
 extension Enumeration.Case {
     /// Creates and returns enumeration cases from an enumeration case declaration.
     public static func cases(from node: EnumCaseDeclSyntax) -> [Enumeration.Case] {
-        return node.elements.compactMap { Enumeration.Case(element: $0) }
+        return node.elements.compactMap { Enumeration.Case($0) }
     }
 
     /// Creates an instance initialized with the given syntax node.
-    @available(swift, introduced: 0.0.1, deprecated: 0.0.1, message: "Use Enumeration.Case.cases(from:) instead")
-    public init(_ node: EnumCaseDeclSyntax) {
-        self.init(element: Array(node.elements).first!)!
-    }
-
-    private init?(element node: EnumCaseElementSyntax) {
+    public init?(_ node: EnumCaseElementSyntax) {
         guard let parent = node.context as? EnumCaseDeclSyntax else {
             assertionFailure("EnumCaseElement should be contained within EnumCaseDecl")
             return nil
