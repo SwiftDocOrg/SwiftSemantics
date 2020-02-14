@@ -19,6 +19,6 @@ extension Deinitializer: ExpressibleBySyntax {
     public init(_ node: DeinitializerDeclSyntax) {
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
-        keyword = node.deinitKeyword.withoutTrivia().text
+        keyword = node.deinitKeyword.text.trimmed
     }
 }

@@ -150,8 +150,8 @@ extension Function: ExpressibleBySyntax {
     public init(_ node: FunctionDeclSyntax) {
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
-        keyword = node.funcKeyword.withoutTrivia().text
-        identifier = node.identifier.withoutTrivia().text
+        keyword = node.funcKeyword.text.trimmed
+        identifier = node.identifier.text.trimmed
         signature = Signature(node.signature)
         genericParameters = node.genericParameterClause?.genericParameterList.map { GenericParameter($0) } ?? []
         genericRequirements = GenericRequirement.genericRequirements(from: node.genericWhereClause?.requirementList)
@@ -162,8 +162,8 @@ extension Function.Parameter: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: FunctionParameterSyntax) {
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
-        firstName = node.firstName?.withoutTrivia().text
-        secondName = node.secondName?.withoutTrivia().text
+        firstName = node.firstName?.text.trimmed
+        secondName = node.secondName?.text.trimmed
         type = node.type?.description.trimmed
         variadic = node.ellipsis != nil
         defaultArgument = node.defaultArgument?.value.description.trimmed

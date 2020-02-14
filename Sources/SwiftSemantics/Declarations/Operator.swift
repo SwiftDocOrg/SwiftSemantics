@@ -134,7 +134,7 @@ extension Operator: ExpressibleBySyntax {
     public init(_ node: OperatorDeclSyntax) {
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
-        keyword = node.operatorKeyword.withoutTrivia().text
-        name = node.identifier.withoutTrivia().text
+        keyword = node.operatorKeyword.text.trimmed
+        name = node.identifier.text.trimmed
     }
 }

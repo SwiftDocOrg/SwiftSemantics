@@ -54,9 +54,9 @@ extension Extension: ExpressibleBySyntax {
     public init(_ node: ExtensionDeclSyntax) {
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
-        keyword = node.extensionKeyword.withoutTrivia().text
+        keyword = node.extensionKeyword.text.trimmed
         extendedType = node.extendedType.description.trimmed
-        inheritance = node.inheritanceClause?.inheritedTypeCollection.map { $0.withoutTrivia().typeName.description.trimmed } ?? []
+        inheritance = node.inheritanceClause?.inheritedTypeCollection.map { $0.typeName.description.trimmed } ?? []
         genericRequirements = GenericRequirement.genericRequirements(from: node.genericWhereClause?.requirementList)
     }
 }

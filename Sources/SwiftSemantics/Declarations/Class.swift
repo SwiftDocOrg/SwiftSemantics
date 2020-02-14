@@ -71,9 +71,9 @@ extension Class: ExpressibleBySyntax {
     public init(_ node: ClassDeclSyntax) {
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
-        keyword = node.classKeyword.withoutTrivia().text
-        name = node.identifier.withoutTrivia().text
-        inheritance = node.inheritanceClause?.inheritedTypeCollection.map { $0.withoutTrivia().typeName.description.trimmed } ?? []
+        keyword = node.classKeyword.text.trimmed
+        name = node.identifier.text.trimmed
+        inheritance = node.inheritanceClause?.inheritedTypeCollection.map { $0.typeName.description.trimmed } ?? []
         genericParameters = node.genericParameterClause?.genericParameterList.map { GenericParameter($0) } ?? []
         genericRequirements = GenericRequirement.genericRequirements(from: node.genericWhereClause?.requirementList)
     }

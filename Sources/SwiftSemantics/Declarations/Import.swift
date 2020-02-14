@@ -22,9 +22,9 @@ extension Import: ExpressibleBySyntax {
     public init(_ node: ImportDeclSyntax) {
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
-        keyword = node.importTok.withoutTrivia().text
-        kind = node.importKind?.withoutTrivia().text
-        pathComponents = node.path.tokens.filter { $0.tokenKind != .period }.map { $0.withoutTrivia().text }
+        keyword = node.importTok.text.trimmed
+        kind = node.importKind?.text.trimmed
+        pathComponents = node.path.tokens.filter { $0.tokenKind != .period }.map { $0.text.trimmed }
     }
 }
 

@@ -80,14 +80,14 @@ public struct ConditionalCompilationBlock: Declaration, Hashable, Codable {
 extension ConditionalCompilationBlock: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: IfConfigDeclSyntax) {
-        branches = node.withoutTrivia().clauses.map { Branch($0) }
+        branches = node.clauses.map { Branch($0) }
     }
 }
 
 extension ConditionalCompilationBlock.Branch: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: IfConfigClauseSyntax) {
-        let keyword = node.poundKeyword.withoutTrivia().text
+        let keyword = node.poundKeyword.text.trimmed
         let condition = node.condition?.description.trimmed
         self.init(keyword: keyword, condition: condition)!
     }

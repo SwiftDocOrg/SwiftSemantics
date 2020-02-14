@@ -141,8 +141,8 @@ extension PrecedenceGroup: ExpressibleBySyntax {
     public init(_ node: PrecedenceGroupDeclSyntax) {
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
-        keyword = node.precedencegroupKeyword.withoutTrivia().text
-        name = node.identifier.withoutTrivia().text
+        keyword = node.precedencegroupKeyword.text.trimmed
+        name = node.identifier.text.trimmed
 
         var assignment: Bool?
         var associativity: Associativity?

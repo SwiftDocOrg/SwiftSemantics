@@ -66,9 +66,9 @@ extension Structure: ExpressibleBySyntax {
     public init(_ node: StructDeclSyntax) {
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
-        keyword = node.structKeyword.withoutTrivia().text
-        name = node.identifier.withoutTrivia().text
-        inheritance = node.inheritanceClause?.inheritedTypeCollection.map { $0.withoutTrivia().typeName.description.trimmed } ?? []
+        keyword = node.structKeyword.text.trimmed
+        name = node.identifier.text.trimmed
+        inheritance = node.inheritanceClause?.inheritedTypeCollection.map { $0.typeName.description.trimmed } ?? []
         genericParameters = node.genericParameterClause?.genericParameterList.map { GenericParameter($0) } ?? []
         genericRequirements = GenericRequirement.genericRequirements(from: node.genericWhereClause?.requirementList)
     }

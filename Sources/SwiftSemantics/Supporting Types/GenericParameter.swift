@@ -36,7 +36,7 @@ extension GenericParameter: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: GenericParameterSyntax) {
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
-        name = node.name.withoutTrivia().text
+        name = node.name.text.trimmed
         type = node.inheritedType?.description
     }
 }

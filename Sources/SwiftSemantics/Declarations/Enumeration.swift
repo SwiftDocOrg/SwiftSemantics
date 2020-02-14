@@ -122,9 +122,9 @@ extension Enumeration: ExpressibleBySyntax {
     public init(_ node: EnumDeclSyntax) {
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
-        keyword = node.enumKeyword.withoutTrivia().text
-        name = node.identifier.withoutTrivia().text
-        inheritance = node.inheritanceClause?.inheritedTypeCollection.map { $0.withoutTrivia().typeName.description.trimmed } ?? []
+        keyword = node.enumKeyword.text.trimmed
+        name = node.identifier.text.trimmed
+        inheritance = node.inheritanceClause?.inheritedTypeCollection.map { $0.typeName.description.trimmed } ?? []
         genericParameters = node.genericParameters?.genericParameterList.map { GenericParameter($0) } ?? []
         genericRequirements = GenericRequirement.genericRequirements(from: node.genericWhereClause?.requirementList)
     }
@@ -150,9 +150,9 @@ extension Enumeration.Case {
 
         attributes = parent.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = parent.modifiers?.map { Modifier($0) } ?? []
-        keyword = parent.caseKeyword.withoutTrivia().text
+        keyword = parent.caseKeyword.text.trimmed
 
-        name = node.identifier.withoutTrivia().text
+        name = node.identifier.text.trimmed
         associatedValue = node.associatedValue?.parameterList.map { Function.Parameter($0) }
         rawValue = node.rawValue?.children.first { $0.isExpr }?.description
     }

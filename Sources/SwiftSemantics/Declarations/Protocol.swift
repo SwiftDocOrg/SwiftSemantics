@@ -36,9 +36,9 @@ extension Protocol: ExpressibleBySyntax {
     public init(_ node: ProtocolDeclSyntax) {
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
-        keyword = node.protocolKeyword.withoutTrivia().text
-        name = node.identifier.withoutTrivia().text
-        inheritance = node.inheritanceClause?.inheritedTypeCollection.map { $0.withoutTrivia().typeName.description.trimmed } ?? []
+        keyword = node.protocolKeyword.text.trimmed
+        name = node.identifier.text.trimmed
+        inheritance = node.inheritanceClause?.inheritedTypeCollection.map { $0.typeName.description.trimmed } ?? []
     }
 }
 

@@ -57,7 +57,7 @@ extension Initializer: ExpressibleBySyntax {
     public init(_ node: InitializerDeclSyntax) {
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
-        keyword = node.initKeyword.withoutTrivia().text
+        keyword = node.initKeyword.text.trimmed
         optional = node.optionalMark != nil
         genericParameters = node.genericParameterClause?.genericParameterList.map { GenericParameter($0) } ?? []
         parameters = node.parameters.parameterList.map { Function.Parameter($0) }

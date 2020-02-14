@@ -36,7 +36,7 @@ public struct Modifier: Hashable, Codable {
 extension Modifier: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: DeclModifierSyntax) {
-        name = node.name.withoutTrivia().text
+        name = node.name.text.trimmed
         detail = node.detail?.description
     }
 }

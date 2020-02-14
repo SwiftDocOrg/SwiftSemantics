@@ -57,7 +57,7 @@ extension Subscript: ExpressibleBySyntax {
     public init(_ node: SubscriptDeclSyntax) {
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
-        keyword = node.subscriptKeyword.withoutTrivia().text
+        keyword = node.subscriptKeyword.text.trimmed
         indices = node.indices.parameterList.map { Function.Parameter($0) }
         genericParameters = node.genericParameterClause?.genericParameterList.map { GenericParameter($0) } ?? []
         returnType = node.result.returnType.description.trimmed

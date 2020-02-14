@@ -66,7 +66,7 @@ extension Variable: ExpressibleBySyntax {
 
         attributes = parent.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = parent.modifiers?.map { Modifier($0) } ?? []
-        keyword = parent.letOrVarKeyword.withoutTrivia().text
+        keyword = parent.letOrVarKeyword.text.trimmed
         name = node.pattern.description.trimmed
         typeAnnotation = node.typeAnnotation?.type.description.trimmed
         initializedValue = node.initializer?.value.description.trimmed

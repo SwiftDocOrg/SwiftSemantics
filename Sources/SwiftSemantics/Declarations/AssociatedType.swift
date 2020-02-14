@@ -22,8 +22,8 @@ extension AssociatedType: ExpressibleBySyntax {
     public init(_ node: AssociatedtypeDeclSyntax) {
         attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
-        keyword = node.associatedtypeKeyword.withoutTrivia().text
-        name = node.identifier.withoutTrivia().text
+        keyword = node.associatedtypeKeyword.text.trimmed
+        name = node.identifier.text.trimmed
     }
 }
 
