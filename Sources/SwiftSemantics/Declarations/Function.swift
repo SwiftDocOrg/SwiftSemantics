@@ -148,7 +148,7 @@ public struct Function: Declaration, Hashable, Codable {
 extension Function: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: FunctionDeclSyntax) {
-        attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
+        attributes = node.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.funcKeyword.text.trimmed
         identifier = node.identifier.text.trimmed
@@ -161,7 +161,7 @@ extension Function: ExpressibleBySyntax {
 extension Function.Parameter: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: FunctionParameterSyntax) {
-        attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
+        attributes = node.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         firstName = node.firstName?.text.trimmed
         secondName = node.secondName?.text.trimmed
         type = node.type?.description.trimmed

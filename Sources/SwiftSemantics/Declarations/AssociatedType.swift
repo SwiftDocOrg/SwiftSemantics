@@ -20,7 +20,7 @@ public struct AssociatedType: Declaration, Hashable, Codable {
 extension AssociatedType: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: AssociatedtypeDeclSyntax) {
-        attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
+        attributes = node.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.associatedtypeKeyword.text.trimmed
         name = node.identifier.text.trimmed

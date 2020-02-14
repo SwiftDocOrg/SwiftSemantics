@@ -5,9 +5,7 @@ import XCTest
 final class AssociatedTypeTests: XCTestCase {
     func testAssociatedTypeDeclaration() throws {
         let source = #"""
-        protocol P {
-            associatedtype T
-        }
+        associatedtype T
         """#
 
         let declarations = try SyntaxParser.declarations(of: AssociatedType.self, source: source)

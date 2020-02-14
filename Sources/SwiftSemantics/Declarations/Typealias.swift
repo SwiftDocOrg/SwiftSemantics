@@ -52,7 +52,7 @@ public struct Typealias: Declaration, Hashable, Codable {
 extension Typealias: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: TypealiasDeclSyntax) {
-        attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
+        attributes = node.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.typealiasKeyword.text.trimmed
         name = node.identifier.text.trimmed

@@ -55,14 +55,14 @@ public struct Subscript: Declaration, Hashable, Codable {
 extension Subscript: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: SubscriptDeclSyntax) {
-        attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
+        attributes = node.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.subscriptKeyword.text.trimmed
         indices = node.indices.parameterList.map { Function.Parameter($0) }
         genericParameters = node.genericParameterClause?.genericParameterList.map { GenericParameter($0) } ?? []
         returnType = node.result.returnType.description.trimmed
         genericRequirements = GenericRequirement.genericRequirements(from: node.genericWhereClause?.requirementList)
-        accessors = Variable.Accessor.accessors(from: node.accessor as? AccessorBlockSyntax)
+        accessors = Variable.Accessor.accessors(from: node.accessor?.as(AccessorBlockSyntax.self))
     }
 }
 

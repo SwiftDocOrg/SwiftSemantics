@@ -1,9 +1,9 @@
 import SwiftSyntax
 
-extension Syntax {
-    var context: DeclSyntax? {
-        guard let parent = parent else { return nil }
-        for case let declaration as DeclSyntax in sequence(first: parent, next: { $0.parent }) {
+extension SyntaxProtocol {
+    var context: DeclSyntaxProtocol? {
+        for case let node? in sequence(first: parent, next: { $0?.parent }) {
+            guard let declaration = node.asProtocol(DeclSyntaxProtocol.self) else { continue }
             return declaration
         }
 

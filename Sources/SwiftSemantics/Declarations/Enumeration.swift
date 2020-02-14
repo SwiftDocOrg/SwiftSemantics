@@ -120,7 +120,7 @@ extension Enumeration.Case: CustomStringConvertible {
 extension Enumeration: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: EnumDeclSyntax) {
-        attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
+        attributes = node.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.enumKeyword.text.trimmed
         name = node.identifier.text.trimmed
@@ -143,12 +143,12 @@ extension Enumeration.Case {
             return nil
         }
 
-        attributes = parent.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
+        attributes = parent.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         modifiers = parent.modifiers?.map { Modifier($0) } ?? []
         keyword = parent.caseKeyword.text.trimmed
 
         name = node.identifier.text.trimmed
         associatedValue = node.associatedValue?.parameterList.map { Function.Parameter($0) }
-        rawValue = node.rawValue?.children.first { $0.isExpr }?.description
+        rawValue = node.rawValue?.value.description.trimmed
     }
 }

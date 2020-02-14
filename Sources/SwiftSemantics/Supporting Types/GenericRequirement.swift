@@ -63,20 +63,19 @@ public struct GenericRequirement: Hashable, Codable {
      */
     public static func genericRequirements(from node: GenericRequirementListSyntax?) -> [GenericRequirement] {
         guard let node = node else { return [] }
-        return node.children.compactMap { GenericRequirement($0) }
+        return node.compactMap { GenericRequirement($0) }
     }
 
-    private init?(_ node: GenericRequirementListSyntax.Element) {
-        switch node {
-        case let node as SameTypeRequirementSyntax:
+    private init?(_ node: GenericRequirementSyntax) {
+        if let node = SameTypeRequirementSyntax(node.body) {
             self.relation = .sameType
             self.leftTypeIdentifier = node.leftTypeIdentifier.description.trimmed
             self.rightTypeIdentifier = node.rightTypeIdentifier.description.trimmed
-        case let node as ConformanceRequirementSyntax:
+        } else if let node = ConformanceRequirementSyntax(node.body) {
             self.relation = .conformance
             self.leftTypeIdentifier = node.leftTypeIdentifier.description.trimmed
             self.rightTypeIdentifier = node.rightTypeIdentifier.description.trimmed
-        default:
+        } else {
             return nil
         }
     }

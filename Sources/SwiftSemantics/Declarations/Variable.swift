@@ -64,29 +64,23 @@ extension Variable: ExpressibleBySyntax {
             return nil
         }
 
-        attributes = parent.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
+        attributes = parent.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         modifiers = parent.modifiers?.map { Modifier($0) } ?? []
         keyword = parent.letOrVarKeyword.text.trimmed
         name = node.pattern.description.trimmed
         typeAnnotation = node.typeAnnotation?.type.description.trimmed
         initializedValue = node.initializer?.value.description.trimmed
-        accessors = Accessor.accessors(from: node.accessor as? AccessorBlockSyntax)
+        accessors = Accessor.accessors(from: node.accessor?.as(AccessorBlockSyntax.self))
     }
 }
 
 extension Variable.Accessor: ExpressibleBySyntax {
     public static func accessors(from node: AccessorBlockSyntax?) -> [Variable.Accessor] {
         guard let node = node else { return [] }
-        return node.accessors.compactMap { Variable.Accessor(accessor: $0) }
+        return node.accessors.compactMap { Variable.Accessor($0) }
     }
 
-    /// Creates an instance initialized with the given syntax node.
-    @available(swift, introduced: 0.0.1, deprecated: 0.0.1, message: "Use Variable.Accessor.accessors(from:) instead")
-    public init(_ node: AccessorDeclSyntax) {
-        self.init(accessor: node)!
-    }
-
-    private init?(accessor node: AccessorDeclSyntax) {
+    public init?(_ node: AccessorDeclSyntax) {
         let rawValue = node.accessorKind.text.trimmed
         if rawValue.isEmpty {
             self.kind = nil
@@ -96,7 +90,7 @@ extension Variable.Accessor: ExpressibleBySyntax {
             return nil
         }
 
-        attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
+        attributes = node.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         modifier = node.modifier.map { Modifier($0) }
     }
 }

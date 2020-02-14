@@ -52,7 +52,7 @@ public struct Extension: Declaration, Hashable, Codable {
 extension Extension: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: ExtensionDeclSyntax) {
-        attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
+        attributes = node.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.extensionKeyword.text.trimmed
         extendedType = node.extendedType.description.trimmed

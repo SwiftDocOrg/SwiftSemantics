@@ -35,7 +35,7 @@ public struct GenericParameter: Hashable, Codable {
 extension GenericParameter: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: GenericParameterSyntax) {
-        attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
+        attributes = node.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         name = node.name.text.trimmed
         type = node.inheritedType?.description
     }

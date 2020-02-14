@@ -20,7 +20,7 @@ import SwiftSyntax
  collector.enumerations.first?.name // "E"
  ```
  */
-open class DeclarationCollector {
+open class DeclarationCollector: SyntaxVisitor {
     /// The collected associated type declarations.
     public private(set) var associatedTypes: [AssociatedType] = []
 
@@ -73,110 +73,108 @@ open class DeclarationCollector {
     public private(set) var variables: [Variable] = []
 
     /// Creates a new declaration collector.
-    public init() {}
-}
+    public override init() {}
 
-// MARK: - SyntaxVisitor
+    // MARK: - SyntaxVisitor
 
-extension DeclarationCollector: SyntaxVisitor {
     /// Called when visiting an `AssociatedtypeDeclSyntax` node
-    public func visit(_ node: AssociatedtypeDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: AssociatedtypeDeclSyntax) -> SyntaxVisitorContinueKind {
         associatedTypes.append(AssociatedType(node))
         return .skipChildren
     }
 
     /// Called when visiting a `ClassDeclSyntax` node
-    public func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
         classes.append(Class(node))
         return .visitChildren
     }
 
     /// Called when visiting a `DeinitializerDeclSyntax` node
-    public func visit(_ node: DeinitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: DeinitializerDeclSyntax) -> SyntaxVisitorContinueKind {
         deinitializers.append(Deinitializer(node))
         return .skipChildren
     }
 
     /// Called when visiting an `EnumDeclSyntax` node
-    public func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
         enumerations.append(Enumeration(node))
         return .visitChildren
     }
 
     /// Called when visiting an `EnumCaseDeclSyntax` node
-    public func visit(_ node: EnumCaseDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: EnumCaseDeclSyntax) -> SyntaxVisitorContinueKind {
         enumerationCases.append(contentsOf: Enumeration.Case.cases(from: node))
         return .skipChildren
     }
 
     /// Called when visiting an `ExtensionDeclSyntax` node
-    public func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
         extensions.append(Extension(node))
         return .visitChildren
     }
 
     /// Called when visiting a `FunctionDeclSyntax` node
-    public func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
         functions.append(Function(node))
         return .skipChildren
     }
 
     /// Called when visiting an `IfConfigDeclSyntax` node
-    public func visit(_ node: IfConfigDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: IfConfigDeclSyntax) -> SyntaxVisitorContinueKind {
         conditionalCompilationBlocks.append(ConditionalCompilationBlock(node))
         return .visitChildren
     }
 
     /// Called when visiting an `ImportDeclSyntax` node
-    public func visit(_ node: ImportDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: ImportDeclSyntax) -> SyntaxVisitorContinueKind {
         imports.append(Import(node))
         return .skipChildren
     }
 
     /// Called when visiting an `InitializerDeclSyntax` node
-    public func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
         initializers.append(Initializer(node))
         return .skipChildren
     }
 
     /// Called when visiting an `OperatorDeclSyntax` node
-    public func visit(_ node: OperatorDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: OperatorDeclSyntax) -> SyntaxVisitorContinueKind {
         operators.append(Operator(node))
         return .skipChildren
     }
 
     /// Called when visiting a `PrecedenceGroupDeclSyntax` node
-    public func visit(_ node: PrecedenceGroupDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: PrecedenceGroupDeclSyntax) -> SyntaxVisitorContinueKind {
         precedenceGroups.append(PrecedenceGroup(node))
         return .skipChildren
     }
 
     /// Called when visiting a `ProtocolDeclSyntax` node
-    public func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
         protocols.append(Protocol(node))
         return .visitChildren
     }
 
     /// Called when visiting a `SubscriptDeclSyntax` node
-    public func visit(_ node: SubscriptDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override  func visit(_ node: SubscriptDeclSyntax) -> SyntaxVisitorContinueKind {
         subscripts.append(Subscript(node))
         return .skipChildren
     }
 
     /// Called when visiting a `StructDeclSyntax` node
-    public func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
         structures.append(Structure(node))
         return .visitChildren
     }
 
     /// Called when visiting a `TypealiasDeclSyntax` node
-    public func visit(_ node: TypealiasDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: TypealiasDeclSyntax) -> SyntaxVisitorContinueKind {
         typealiases.append(Typealias(node))
         return .skipChildren
     }
 
     /// Called when visiting a `VariableDeclSyntax` node
-    public func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
         variables.append(contentsOf: Variable.variables(from: node))
         return .skipChildren
     }

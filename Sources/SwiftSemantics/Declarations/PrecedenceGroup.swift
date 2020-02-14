@@ -139,7 +139,7 @@ extension PrecedenceGroup.Relation: Codable {
 extension PrecedenceGroup: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: PrecedenceGroupDeclSyntax) {
-        attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
+        attributes = node.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.precedencegroupKeyword.text.trimmed
         name = node.identifier.text.trimmed
@@ -149,17 +149,14 @@ extension PrecedenceGroup: ExpressibleBySyntax {
         var relations: [Relation] = []
 
         for attribute in node.groupAttributes {
-            switch attribute {
-            case let attribute as PrecedenceGroupAssignmentSyntax:
+            if let attribute = PrecedenceGroupAssignmentSyntax(attribute) {
                 assignment = Bool(attribute)
-            case let attribute as PrecedenceGroupAssociativitySyntax:
+            } else if let attribute = PrecedenceGroupAssociativitySyntax(attribute) {
                 associativity = Associativity(attribute)
-            case let attribute as PrecedenceGroupRelationSyntax:
+            } else if let attribute = PrecedenceGroupRelationSyntax(attribute) {
                 if let relation = Relation(attribute) {
                     relations.append(relation)
                 }
-            default:
-                continue
             }
         }
 

@@ -4,9 +4,9 @@ import struct SwiftSemantics.Protocol
 
 extension SyntaxParser {
     static func declarations<T: Declaration>(of type: T.Type, source: String) throws -> [T] {
-        var collector = DeclarationCollector()
+        let collector = DeclarationCollector()
         let tree = try parse(source: source)
-        tree.walk(&collector)
+        _ = collector.walk(tree)
 
         switch type {
         case is AssociatedType.Type:

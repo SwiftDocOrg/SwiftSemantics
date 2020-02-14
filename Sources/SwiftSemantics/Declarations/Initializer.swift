@@ -55,7 +55,7 @@ public struct Initializer: Declaration, Hashable, Codable {
 extension Initializer: ExpressibleBySyntax {
     /// Creates an instance initialized with the given syntax node.
     public init(_ node: InitializerDeclSyntax) {
-        attributes = node.attributes?.compactMap{ $0 as? AttributeSyntax }.map { Attribute($0) } ?? []
+        attributes = node.attributes?.compactMap{ $0.as(AttributeSyntax.self) }.map { Attribute($0) } ?? []
         modifiers = node.modifiers?.map { Modifier($0) } ?? []
         keyword = node.initKeyword.text.trimmed
         optional = node.optionalMark != nil

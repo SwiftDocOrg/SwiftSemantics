@@ -19,9 +19,9 @@ final class DeclarationCollectorTests: XCTestCase {
 
         """#
 
-        var collector = DeclarationCollector()
+        let collector = DeclarationCollector()
         let tree = try SyntaxParser.parse(source: source)
-        tree.walk(&collector)
+        _ = collector.walk(tree)
 
         XCTAssertEqual(collector.imports.count, 1)
         XCTAssertEqual(collector.imports.first?.pathComponents, ["UIKit"])
