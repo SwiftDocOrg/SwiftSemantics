@@ -76,7 +76,7 @@ _([including this one][swiftsemantics documentation])_.
 
 ### Swift Package Manager
 
-Add the SwiftMarkup package to your target dependencies in `Package.swift`:
+Add the SwiftSemantics package to your target dependencies in `Package.swift`:
 
 ```swift
 import PackageDescription
