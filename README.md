@@ -32,7 +32,7 @@ class ViewController: UIViewController, UITableViewDelegate {
 
 var collector = DeclarationCollector()
 let tree = try SyntaxParser.parse(source: source)
-tree.walk(&collector)
+collector.walk(tree)
 
 // Import declarations
 collector.imports.first?.pathComponents // ["UIKit"]
