@@ -206,8 +206,7 @@ extension A.B { static func f(){} }
 ```
 
 The first file declares two enumerations:
-`A` and `B`, which is nested in `A`,
-as well as protocol `P`.
+`A` and `B`, which is nested in `A`.
 The second file declares an extension on the type `A.B`
 that provides a static function `f()`.
 Depending on the order in which these files are processed,
