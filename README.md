@@ -6,7 +6,7 @@
 SwiftSemantics is a package that lets you
 parse Swift code into its constituent declarations.
 
-Use [SwiftSyntax][swiftsyntax] to construct 
+Use [SwiftSyntax][swiftsyntax] to construct
 an abstract syntax tree from Swift source code,
 then walk the AST with the provided `DeclarationCollector`
 (or with your own `SyntaxVisitor`-conforming type)
@@ -63,14 +63,14 @@ collector.variables[2].modifiers.first?.detail // "set"
 > For more information about SwiftSyntax,
 > see [this article from NSHipster][nshipster swiftsyntax].
 
-This package is used by [swift-doc][swift-doc] 
-in coordination with [SwiftMarkup][swiftmarkup] 
+This package is used by [swift-doc][swift-doc]
+in coordination with [SwiftMarkup][swiftmarkup]
 to generate documentation for Swift projects
 _([including this one][swiftsemantics documentation])_.
 
 ## Requirements
 
-- Swift 5.1+
+- Swift 5.2 or 5.3
 
 ## Installation
 
@@ -79,18 +79,22 @@ _([including this one][swiftsemantics documentation])_.
 Add the SwiftSemantics package to your target dependencies in `Package.swift`:
 
 ```swift
+// swift-tools-version:5.3
+
 import PackageDescription
 
 let package = Package(
   name: "YourProject",
   dependencies: [
     .package(
+        name: "SwiftSemantics",
         url: "https://github.com/SwiftDocOrg/SwiftSemantics",
-        from: "0.0.1"
+        from: "0.2.0"
     ),
     .package(
-        url: "https://github.com/apple/swift-syntax.git", 
-        from: "0.50100.0"
+        name: "SwiftSyntax",
+        url: "https://github.com/apple/swift-syntax.git",
+        from: "0.50300.0"
     ),
   ]
 )
@@ -102,7 +106,7 @@ Then run the `swift build` command to build your project.
 
 Swift defines 17 different kinds of declarations,
 each of which is represented by a corresponding type in SwiftSemantics
-that conforms to the 
+that conforms to the
 [`Declaration` protocol](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Declaration):
 
 - [`AssociatedType`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/AssociatedType)
@@ -128,11 +132,11 @@ that conforms to the
 > as well as [unit tests](https://github.com/SwiftDocOrg/SwiftSemantics/tree/master/Tests/SwiftSemanticsTests).
 
 The `Declaration` protocol itself has no requirements.
-However, 
-adopting types share many of the same properties, 
-such as 
+However,
+adopting types share many of the same properties,
+such as
 [`attributes`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Class#attributes),
-[`modifiers`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Class#modifiers), 
+[`modifiers`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Class#modifiers),
 and
 [`keyword`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Class#keyword).
 
@@ -140,7 +144,7 @@ SwiftSemantics declaration types are designed to
 maximize the information provided by SwiftSyntax,
 closely following the structure and naming conventions of syntax nodes.
 In some cases,
-the library takes additional measures to refine results 
+the library takes additional measures to refine results
 into more conventional interfaces.
 For example,
 the `PrecedenceGroup` type defines nested
@@ -150,7 +154,7 @@ and
 enumerations for greater convenience and type safety.
 However, in other cases,
 results may be provided in their original, raw `String` values;
-this decision is typically motivated either by 
+this decision is typically motivated either by
 concern for possible future changes to the language
 or simply out of practicality.
 
@@ -163,16 +167,16 @@ There are, however, some details that warrant further discussion:
 
 In Swift,
 a class, enumeration, or structure may contain
-one or more initializers, properties, subscripts, and methods, 
+one or more initializers, properties, subscripts, and methods,
 known as _members_.
 A type can itself be a member of another type,
 such as with `CodingKeys` enumerations nested within `Codable`-conforming types.
 Likewise, a type may also have one or more associated type or type alias members.
 
-SwiftSemantics doesn't provide built-in support for 
+SwiftSemantics doesn't provide built-in support for
 accessing type members directly from declaration values.
-This is probably the most surprising 
-(and perhaps contentious) 
+This is probably the most surprising
+(and perhaps contentious)
 design decision made in the library so far,
 but we believe it to be the most reasonable option available.
 
@@ -180,9 +184,9 @@ One motivation comes down to delegation of responsibility:
 `DeclarationCollector` and other types conforming to `SyntaxVisitor`
 walk the abstract syntax tree,
 respond to nodes as they're visited,
-and decide whether to visit or skip a node's children. 
+and decide whether to visit or skip a node's children.
 If a `Declaration` were to initialize its own members,
-it would have the effect of overriding 
+it would have the effect of overriding
 the tree walker's decision to visit or skip any children.
 We believe that an approach involving direct member initialization is inflexible
 and more likely to produce unexpected results.
@@ -192,8 +196,8 @@ there wouldn't be a clear way to avoid needlessly initializing
 the members of each top-level class
 without potentially missing class declarations nested in other types.
 
-But really, 
-the controlling motivation has to do with extensions --- 
+But really,
+the controlling motivation has to do with extensions ---
 especially when used across multiple files in a module.
 Consider the following two Swift files in the same module:
 
@@ -219,7 +223,7 @@ and therefore misleading.
 <details>
 <summary><em>And if that weren't enough to dissuade you...</em></summary>
 
-Consider what happens when we throw generically-constrained extensions 
+Consider what happens when we throw generically-constrained extensions
 and conditional compilation into the mix...
 
 ```swift
@@ -240,7 +244,7 @@ reconciling declaration contexts to API consumers.
 
 This is the approach we settled on for [swift-doc][swift-doc],
 and it's worked reasonably well so far.
-That said, 
+That said,
 we're certainly open to hearing any alternative approaches
 and invite you to share any feedback about project architecture
 by [opening a new Issue](https://github.com/SwiftDocOrg/SwiftSemantics/issues/new).
@@ -250,13 +254,13 @@ by [opening a new Issue](https://github.com/SwiftDocOrg/SwiftSemantics/issues/ne
 Swift is a complex language with many different rules and concepts,
 and not all of them are represented directly in SwiftSemantics.
 
-Declaration membership, 
+Declaration membership,
 discussed in the previous section,
 is one such example.
 Another is how
 declaration access modifiers like `public` and `private(set)`
 aren't given any special treatment;
-they're [`Modifier`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Modifier) values 
+they're [`Modifier`](https://github.com/SwiftDocOrg/SwiftSemantics/wiki/Modifier) values
 like any other.
 
 This design strategy keeps the library narrowly focused
@@ -265,7 +269,7 @@ and more adaptable to language evolution over time.
 You can extend SwiftSemantics in your own code
 to encode any missing language concepts that are relevant to your problem.
 For example,
-SwiftSemantics doesn't encode the concept of 
+SwiftSemantics doesn't encode the concept of
 [property wrappers](https://nshipster.com/propertywrapper/),
 but you could use it as the foundation of your own representation:
 
@@ -306,9 +310,9 @@ _does_ offer this functionality.
 
 ## Known Issues
 
-- Xcode 11 cannot run unit tests (<kbd>⌘</kbd><kbd>U</kbd>) 
+- Xcode 11 cannot run unit tests (<kbd>⌘</kbd><kbd>U</kbd>)
   when opening the SwiftSemantics package directly,
-  as opposed first to generating an Xcode project file with 
+  as opposed first to generating an Xcode project file with
   `swift package generate-xcodeproj`.
   (The reported error is:
   `Library not loaded: @rpath/lib_InternalSwiftSyntaxParser.dylib`).
