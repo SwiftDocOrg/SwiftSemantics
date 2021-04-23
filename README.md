@@ -89,7 +89,7 @@ let package = Package(
     .package(
         name: "SwiftSemantics",
         url: "https://github.com/SwiftDocOrg/SwiftSemantics",
-        from: "0.2.0"
+        from: "0.3.0"
     ),
     .package(
         name: "SwiftSyntax",
