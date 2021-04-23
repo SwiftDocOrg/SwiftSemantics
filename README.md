@@ -70,7 +70,7 @@ _([including this one][swiftsemantics documentation])_.
 
 ## Requirements
 
-- Swift 5.2 or 5.3
+- Swift 5.2, 5.3, 5.4, or 5.5
 
 ## Installation
 
