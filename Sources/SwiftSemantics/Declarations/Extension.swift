@@ -37,7 +37,7 @@ public struct Extension: Declaration, Hashable, Codable {
      the following conditional extension on structure S
      has a single requirement
      that its generic parameter identified as `"T"`
-     conforms to the type identified as `"Hahable"`:
+     conforms to the type identified as `"Hashable"`:
 
      ```swift
      struct S<T> {}
