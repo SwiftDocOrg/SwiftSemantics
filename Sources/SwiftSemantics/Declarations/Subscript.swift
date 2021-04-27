@@ -35,7 +35,7 @@ public struct Subscript: Declaration, Hashable, Codable {
      the following subscript declaration
      has a single requirement
      that its generic parameter identified as `"T"`
-     conforms to the type identified as `"Hahable"`:
+     conforms to the type identified as `"Hashable"`:
 
      ```swift
      subscript<T>(value: T) where T: Hashable {}

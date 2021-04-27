@@ -53,7 +53,7 @@ public struct Enumeration: Declaration, Hashable, Codable {
      the following declaration of enumeration `E`
      has a single requirement
      that its generic parameter identified as `"T"`
-     conforms to the type identified as `"Hahable"`:
+     conforms to the type identified as `"Hashable"`:
 
      ```swift
      enum E<T> where T: Hashable {}
