@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2021-05-04
+
 ### Changed
 
 - Changed swift-syntax dependency to target `release/5.4` branch
@@ -54,7 +56,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial release.
 
-[unreleased]: https://github.com/SwiftDocOrg/SwiftSemantics/compare/0.3.0...main
+[unreleased]: https://github.com/SwiftDocOrg/SwiftSemantics/compare/0.3.1...main
+[0.3.1]: https://github.com/SwiftDocOrg/SwiftSemantics/releases/tag/0.3.1
 [0.3.0]: https://github.com/SwiftDocOrg/SwiftSemantics/releases/tag/0.3.0
 [0.2.0]: https://github.com/SwiftDocOrg/SwiftSemantics/releases/tag/0.2.0
 [0.1.0]: https://github.com/SwiftDocOrg/SwiftSemantics/releases/tag/0.1.0
