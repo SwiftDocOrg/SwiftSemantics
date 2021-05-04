@@ -90,17 +90,34 @@ let package = Package(
         name: "SwiftSemantics",
         url: "https://github.com/SwiftDocOrg/SwiftSemantics",
         from: "0.3.0"
-    ),
-    .package(
-        name: "SwiftSyntax",
-        url: "https://github.com/apple/swift-syntax.git",
-        from: "0.50300.0"
-    ),
+    )
   ]
 )
 ```
 
-Then run the `swift build` command to build your project.
+If your project has a direct dependency `SwiftSyntax`,
+use the declaration below that corresponds to your Swift language version:
+
+```swift
+// Swift 5.2
+.package(url: "https://github.com/apple/swift-syntax.git",
+         .exact("0.50200.0")),
+
+// Swift 5.3
+.package(name: "SwiftSyntax",
+         url: "https://github.com/apple/swift-syntax.git",
+         .exact("0.50300.0")),
+
+// Swift 5.4
+.package(name: "SwiftSyntax",
+         url: "https://github.com/apple/swift-syntax.git",
+         .revision("release/5.4")),
+
+// Swift 5.5
+.package(name: "SwiftSyntax",
+         url: "https://github.com/apple/swift-syntax.git",
+         .revision("4ae758ab85ed2a5d3e3e8b5050a8ce52179bd102")),
+```
 
 ## Detailed Design
 
