@@ -91,9 +91,9 @@ jobs:
       - uses: actions/checkout@v2
       - uses: seanmiddleditch/gha-setup-vsdevenv@master
 
-      - name: Install swift-5.5 (2021-04-19 SNAPSHOT)
+      - name: Install swift-5.5 (2021-05-02 SNAPSHOT)
         run: |
-          Install-Binary -Url "https://swift.org/builds/swift-5.5-branch/windows10/swift-5.5-DEVELOPMENT-SNAPSHOT-2021-04-19-a/swift-5.5-DEVELOPMENT-SNAPSHOT-2021-04-19-a-windows10.exe" -Name "installer.exe" -ArgumentList ("-q")
+          Install-Binary -Url "https://swift.org/builds/swift-5.5-branch/windows10/swift-5.5-DEVELOPMENT-SNAPSHOT-2021-05-02-a/swift-5.5-DEVELOPMENT-SNAPSHOT-2021-05-02-a-windows10.exe" -Name "installer.exe" -ArgumentList ("-q")
       - name: Set Environment Variables
         run: |
           echo "SDKROOT=C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
