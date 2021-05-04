@@ -327,13 +327,16 @@ _does_ offer this functionality.
 
 ## Known Issues
 
-- Xcode 11 cannot run unit tests (<kbd>⌘</kbd><kbd>U</kbd>)
+- Xcode cannot run unit tests (<kbd>⌘</kbd><kbd>U</kbd>)
   when opening the SwiftSemantics package directly,
   as opposed first to generating an Xcode project file with
   `swift package generate-xcodeproj`.
   (The reported error is:
   `Library not loaded: @rpath/lib_InternalSwiftSyntaxParser.dylib`).
   As a workaround,
+  you can [install the latest toolchain](https://swift.org/download/)
+  and enable it in "Xcode > Preferences > Components > Toolchains".
+  Alternatively,
   you can run unit tests from the command line
   with `swift test`.
 
