@@ -89,7 +89,7 @@ let package = Package(
     .package(
         name: "SwiftSemantics",
         url: "https://github.com/SwiftDocOrg/SwiftSemantics",
-        from: "0.3.1"
+        from: "0.3.2"
     )
   ]
 )
@@ -116,7 +116,7 @@ use the declaration below that corresponds to your Swift language version:
 // Swift 5.5
 .package(name: "SwiftSyntax",
          url: "https://github.com/apple/swift-syntax.git",
-         .revision("4ae758ab85ed2a5d3e3e8b5050a8ce52179bd102")),
+         .revision("release/5.5")),
 ```
 
 ## Detailed Design
