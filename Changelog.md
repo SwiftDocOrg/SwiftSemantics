@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Changed swift-syntax dependency to target `release/5.5` branch
+  to resolve an issue on Windows.
+  #17 by @compnerd.
+
 ## [0.3.1] - 2021-05-04
 
 ### Changed
